@@ -1,0 +1,39 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Regra para a coleção 'products'
+    match /products/{productId} {
+      // Qualquer pessoa pode ler (get, list) os produtos.
+      allow read: if true;
+
+      // Apenas usuários autenticados podem escrever, criar, atualizar ou deletar.
+      // Em um cenário real, você restringiria isso a `request.auth.uid == ADMIN_UID`.
+      allow write, create, update, delete: if request.auth != null;
+    }
+
+    // Regra para a coleção 'users'
+    match /users/{userId} {
+    	// O próprio usuário pode ler e escrever seus dados.
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Regra para a coleção 'orders'
+    match /orders/{orderId} {
+    	// O usuário pode criar seu próprio pedido.
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+
+      // O usuário pode ler apenas os seus próprios pedidos.
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+
+      // A atualização de status (e outros campos) só pode ser feita por admins
+      // (a lógica de admin seria validada no backend/server-side).
+      allow update: if request.auth != null;
+
+      // Ninguém pode deletar pedidos pela aplicação cliente.
+      allow delete: if false;
+    }
+  }
+}

@@ -1,0 +1,11 @@
+# Configuração para o Firebase App Hosting (Próxima geração de hospedagem Next.js)
+kind: "AppHostingConfig"
+schemaVersion: "v1"
+
+# O Firebase detectará automaticamente que este é um projeto Next.js
+# e usará as configurações padrão de build.
+
+# Caso precise de variáveis de ambiente no futuro, elas serão listadas aqui:
+# environmentVariables:
+#   - variable: MINHA_VARIAVEL
+#     value: "valor"
